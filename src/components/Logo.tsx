@@ -1,12 +1,11 @@
-import logo from "@/assets/al-shifa-logo.png.asset.json";
 import { cn } from "@/lib/utils";
 
-export const LOGO_URL = logo.url;
+export const LOGO_URL = "/al-shifa-logo.png";
 
 export function Logo({ className }: { className?: string }) {
   return (
     <img
-      src={logo.url}
+      src={LOGO_URL}
       alt="Al Shifa Family Clinic logo"
       className={cn("object-contain", className)}
     />

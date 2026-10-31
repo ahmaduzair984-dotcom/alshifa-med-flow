@@ -1,23 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, EmptyState } from "@/components/ui-kit";
+import { LiveDataPage, liveLoaders } from "@/components/LiveDataPage";
+import { InvoiceDialog, type InvoiceSale } from "@/components/InvoiceDialog";
+import { AdminOnly } from "@/components/AdminOnly";
 
 export const Route = createFileRoute("/_authenticated/sales")({
-  head: () => ({
-    meta: [
-      { title: "Sales History — Al Shifa Family Clinic Pharmacy" },
-      { name: "description", content: "Sales History for Al Shifa Family Clinic pharmacy management." },
-      { property: "og:title", content: "Sales History — Al Shifa Family Clinic Pharmacy" },
-      { property: "og:description", content: "Sales History for Al Shifa Family Clinic pharmacy management." },
-    ],
-  }),
-  component: Page,
+  component: SalesHistory,
 });
 
-function Page() {
+function SalesHistory() {
   return (
-    <div>
-      <PageHeader title="Sales History" description="This section is being built next." />
-      <EmptyState title="Coming up next" description="Sales History will be available in the next build step." />
-    </div>
+    <AdminOnly>
+      <LiveDataPage
+        title="Sales History"
+        description="Search by invoice, patient, medicine, date, or amount. Open any sale to review and print it."
+        load={liveLoaders.sales}
+        deleteConfig={{ table: "sales", recordLabel: "sale" }}
+        rowActions={(row) => <InvoiceDialog sale={row as InvoiceSale} />}
+      />
+    </AdminOnly>
   );
 }

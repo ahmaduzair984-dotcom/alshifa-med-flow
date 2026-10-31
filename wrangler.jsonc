@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "app",
+  "compatibility_date": "2026-08-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "vars": {
+    "SUPABASE_URL": "https://llmweuoqdccyggmmimyg.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_BqkWBcPif7IVgixm5tdlgg_Mqb8QIQ8"
+  }
+}

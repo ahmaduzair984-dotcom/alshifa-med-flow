@@ -1,23 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, EmptyState } from "@/components/ui-kit";
+import { LiveDataPage, liveLoaders } from "@/components/LiveDataPage";
+import { ReturnDetailsDialog, type ReturnHistoryRow } from "@/components/ReturnDialogs";
+import { DirectReturnDialog } from "@/components/DirectReturnDialog";
 
 export const Route = createFileRoute("/_authenticated/returns")({
-  head: () => ({
-    meta: [
-      { title: "Returns — Al Shifa Family Clinic Pharmacy" },
-      { name: "description", content: "Returns for Al Shifa Family Clinic pharmacy management." },
-      { property: "og:title", content: "Returns — Al Shifa Family Clinic Pharmacy" },
-      { property: "og:description", content: "Returns for Al Shifa Family Clinic pharmacy management." },
-    ],
-  }),
-  component: Page,
+  component: () => (
+    <LiveDataPage
+      title="Returns"
+      description="Return medicine directly without an invoice. Stock, refunds, and profit are adjusted automatically."
+      load={liveLoaders.returns}
+      actions={<DirectReturnDialog />}
+      rowActions={(row) => (
+        <ReturnDetailsDialog returnRecord={row as unknown as ReturnHistoryRow} />
+      )}
+      deleteConfig={{ table: "sale_returns", recordLabel: "return" }}
+    />
+  ),
 });
-
-function Page() {
-  return (
-    <div>
-      <PageHeader title="Returns" description="This section is being built next." />
-      <EmptyState title="Coming up next" description="Returns will be available in the next build step." />
-    </div>
-  );
-}

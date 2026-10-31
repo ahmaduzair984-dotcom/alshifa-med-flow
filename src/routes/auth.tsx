@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Logo } from "@/components/Logo";
 import { friendlyError } from "@/lib/pharmacy";
+import { credentialToAuthEmail } from "@/lib/staff-credentials";
+import { DoctorProfile } from "@/components/DoctorProfile";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -18,13 +19,7 @@ export const Route = createFileRoute("/auth")({
       { title: "Staff Sign In — Al Shifa Family Clinic Pharmacy" },
       {
         name: "description",
-        content:
-          "Secure staff sign in for the Al Shifa Family Clinic pharmacy management system.",
-      },
-      { property: "og:title", content: "Staff Sign In — Al Shifa Family Clinic" },
-      {
-        property: "og:description",
-        content: "Secure staff sign in for the Al Shifa Family Clinic pharmacy system.",
+        content: "Secure username and password sign in for Al Shifa Family Clinic staff.",
       },
     ],
   }),
@@ -37,60 +32,61 @@ function AuthPage() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    let active = true;
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      if (session) navigate({ to: "/dashboard", replace: true });
+      else setChecking(false);
+    });
     void supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
       if (data.session) navigate({ to: "/dashboard", replace: true });
       else setChecking(false);
     });
+    return () => {
+      active = false;
+      subscription.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const signIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const email = credentialToAuthEmail(String(form.get("username") ?? ""));
+    if (!email) {
+      toast.error("Enter the username given to you by the administrator.");
+      return;
+    }
+
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: String(form.get("email") ?? "").trim(),
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
       password: String(form.get("password") ?? ""),
     });
-    setLoading(false);
     if (error) {
+      setLoading(false);
       toast.error(
         /invalid login/i.test(error.message)
-          ? "Incorrect email or password."
+          ? "Incorrect username or password."
           : friendlyError(error),
       );
       return;
     }
-    navigate({ to: "/dashboard", replace: true });
-  };
 
-  const signUp = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const password = String(form.get("password") ?? "");
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters.");
+    const profile = await supabase
+      .from("profiles")
+      .select("is_active")
+      .eq("id", data.user.id)
+      .maybeSingle();
+    if (profile.data?.is_active === false) {
+      await supabase.auth.signOut({ scope: "local" });
+      setLoading(false);
+      toast.error("This staff account has been deactivated. Contact the administrator.");
       return;
     }
-    setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: String(form.get("email") ?? "").trim(),
-      password,
-      options: {
-        emailRedirectTo: window.location.origin,
-        data: { full_name: String(form.get("full_name") ?? "").trim() },
-      },
-    });
+
     setLoading(false);
-    if (error) {
-      toast.error(friendlyError(error));
-      return;
-    }
-    if (data.session) {
-      toast.success("Account created. Welcome to Al Shifa Family Clinic.");
-      navigate({ to: "/dashboard", replace: true });
-    } else {
-      toast.success("Account created. Please check your email to confirm, then sign in.");
-    }
+    navigate({ to: "/dashboard", replace: true });
   };
 
   if (checking) {
@@ -104,84 +100,59 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-muted to-background p-4">
       <div className="w-full max-w-md">
-        <div className="mb-6 flex flex-col items-center text-center">
-          <Logo className="size-28" />
+        <div className="mb-5 flex flex-col items-center text-center">
+          <Logo className="size-24 sm:size-28" />
           <h1 className="mt-2 text-xl font-bold tracking-wide text-primary">
             AL SHIFA FAMILY CLINIC
           </h1>
-          <p className="text-sm text-muted-foreground">Dr. Saqlain Abbas Chattha</p>
+          <DoctorProfile compact />
         </div>
-
         <Card className="shadow-lg">
           <CardHeader className="pb-2">
             <CardTitle>Staff access</CardTitle>
             <CardDescription>
-              Sign in to manage the pharmacy, stock and sales.
+              Sign in with the username and password given by the administrator.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin">
-              <TabsList className="mb-4 grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign in</TabsTrigger>
-                <TabsTrigger value="signup">Create account</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="signin">
-                <form className="space-y-4" onSubmit={signIn}>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" required autoComplete="email" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      autoComplete="current-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
-                    Sign in
-                  </Button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="signup">
-                <form className="space-y-4" onSubmit={signUp}>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="full_name">Full name</Label>
-                    <Input id="full_name" name="full_name" required />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input id="signup-email" name="email" type="email" required />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      name="password"
-                      type="password"
-                      required
-                      autoComplete="new-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
-                    Create account
-                  </Button>
-                  <p className="text-xs text-muted-foreground">
-                    The first account created becomes the clinic administrator. Later accounts
-                    start as pharmacist and can be upgraded by the administrator.
-                  </p>
-                </form>
-              </TabsContent>
-            </Tabs>
+            <form className="space-y-4" onSubmit={signIn}>
+              <div className="space-y-1.5">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  autoComplete="username"
+                  placeholder="e.g. pharmacist1"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
+                Sign in
+              </Button>
+            </form>
+            <p className="mt-4 rounded-md bg-muted p-3 text-center text-xs text-muted-foreground">
+              Forgotten credentials are reset by the clinic administrator. No invitation or recovery
+              message is required.
+            </p>
           </CardContent>
         </Card>
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          Developed by Ahmad Uzair Tarar
+        </p>
       </div>
     </div>
   );

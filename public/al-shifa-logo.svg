@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title>Al Shifa Family Clinic</title>
+  <circle cx="80" cy="80" r="76" fill="#fff" stroke="#0b3b68" stroke-width="8"/>
+  <path d="M80 31c-19 0-34 15-34 34 0 25 34 57 34 57s34-32 34-57c0-19-15-34-34-34z" fill="#11865b"/>
+  <path d="M72 51h16v21h21v16H88v21H72V88H51V72h21z" fill="#fff"/>
+  <text x="80" y="143" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#0b3b68">AL SHIFA</text>
+</svg>

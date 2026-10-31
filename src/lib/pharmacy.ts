@@ -15,8 +15,12 @@ export type SaleUnitOption = {
 };
 
 /** Available selling units for a product, from largest to base unit. */
-export function saleUnits(product: Pick<Product,
-  "base_unit" | "pack_unit" | "units_per_pack" | "carton_unit" | "packs_per_carton">): SaleUnitOption[] {
+export function saleUnits(
+  product: Pick<
+    Product,
+    "base_unit" | "pack_unit" | "units_per_pack" | "carton_unit" | "packs_per_carton"
+  >,
+): SaleUnitOption[] {
   const units: SaleUnitOption[] = [{ label: product.base_unit, multiplier: 1 }];
   if (product.pack_unit && product.units_per_pack > 1) {
     units.push({ label: product.pack_unit, multiplier: product.units_per_pack });
@@ -85,7 +89,10 @@ export function formatDateTime(value: string | null | undefined): string {
 }
 
 /** Turns a raw database error into a message that is safe and useful for staff. */
-export function friendlyError(error: unknown, fallback = "Something went wrong. Please try again."): string {
+export function friendlyError(
+  error: unknown,
+  fallback = "Something went wrong. Please try again.",
+): string {
   const message =
     typeof error === "string"
       ? error

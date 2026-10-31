@@ -1,23 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, EmptyState } from "@/components/ui-kit";
+import { LiveDataPage, liveLoaders } from "@/components/LiveDataPage";
+import { StockAdjustmentDialog } from "@/components/StockAdjustmentDialog";
+import { useAuth } from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/_authenticated/inventory")({
-  head: () => ({
-    meta: [
-      { title: "Inventory — Al Shifa Family Clinic Pharmacy" },
-      { name: "description", content: "Inventory for Al Shifa Family Clinic pharmacy management." },
-      { property: "og:title", content: "Inventory — Al Shifa Family Clinic Pharmacy" },
-      { property: "og:description", content: "Inventory for Al Shifa Family Clinic pharmacy management." },
-    ],
-  }),
-  component: Page,
-});
+export const Route = createFileRoute("/_authenticated/inventory")({ component: Inventory });
 
-function Page() {
+function Inventory() {
+  const { can, isAdmin } = useAuth();
   return (
-    <div>
-      <PageHeader title="Inventory" description="This section is being built next." />
-      <EmptyState title="Coming up next" description="Inventory will be available in the next build step." />
-    </div>
+    <LiveDataPage
+      title="Inventory"
+      description="Live stock, average buying price, selling price, and inventory value calculated from batches."
+      load={liveLoaders.inventory}
+      actions={can("manage_stock") ? <StockAdjustmentDialog /> : undefined}
+      maxColumns={8}
+      showSerialNumber
+      compactTable
+      hiddenColumns={isAdmin ? [] : ["stock_value_paisa"]}
+      columnLabels={{
+        medicine: "Medicine",
+        base_unit: "Unit",
+        stock: "In stock",
+        minimum_stock: "Min.",
+        average_buying_price_paisa: "Avg. buy",
+        selling_price_paisa: "Sale",
+        stock_value_paisa: "Stock value",
+        nearest_expiry: "Expiry",
+      }}
+    />
   );
 }

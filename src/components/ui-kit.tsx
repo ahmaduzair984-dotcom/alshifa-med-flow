@@ -18,7 +18,11 @@ export function PageHeader({
         <h1 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">{title}</h1>
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end [&>button]:max-sm:flex-1">
+          {actions}
+        </div>
+      )}
     </div>
   );
 }
@@ -50,21 +54,26 @@ export function StatCard({
   return (
     <Card className="overflow-hidden">
       <CardContent className="flex items-start justify-between gap-3 p-4">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {label}
           </p>
           {loading ? (
             <Skeleton className="mt-2 h-7 w-24" />
           ) : (
-            <p className={cn("tabular mt-1 truncate text-xl font-bold md:text-2xl", TONES[tone])}>
+            <p
+              className={cn(
+                "tabular mt-1 whitespace-normal text-xl font-bold leading-tight [overflow-wrap:anywhere] md:text-2xl",
+                TONES[tone],
+              )}
+            >
               {value}
             </p>
           )}
           {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
         </div>
         {icon && (
-          <div className={cn("rounded-md bg-muted p-2", TONES[tone])} aria-hidden>
+          <div className={cn("shrink-0 rounded-md bg-muted p-2", TONES[tone])} aria-hidden>
             {icon}
           </div>
         )}
@@ -88,9 +97,7 @@ export function EmptyState({
     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-card/50 px-6 py-12 text-center">
       {icon && <div className="mb-3 text-muted-foreground">{icon}</div>}
       <p className="font-medium text-foreground">{title}</p>
-      {description && (
-        <p className="mt-1 max-w-md text-sm text-muted-foreground">{description}</p>
-      )}
+      {description && <p className="mt-1 max-w-md text-sm text-muted-foreground">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

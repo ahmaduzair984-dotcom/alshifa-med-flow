@@ -1,23 +1,44 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, EmptyState } from "@/components/ui-kit";
+import { LiveDataPage, liveLoaders } from "@/components/LiveDataPage";
+import { AddMedicineDialog, EditMedicineDialog } from "@/components/DataEntryDialogs";
 
 export const Route = createFileRoute("/_authenticated/medicines")({
-  head: () => ({
-    meta: [
-      { title: "Medicine Catalog — Al Shifa Family Clinic Pharmacy" },
-      { name: "description", content: "Medicine Catalog for Al Shifa Family Clinic pharmacy management." },
-      { property: "og:title", content: "Medicine Catalog — Al Shifa Family Clinic Pharmacy" },
-      { property: "og:description", content: "Medicine Catalog for Al Shifa Family Clinic pharmacy management." },
-    ],
-  }),
-  component: Page,
+  component: () => (
+    <LiveDataPage
+      title="Medicine Catalog"
+      description="Add medicines here, then use New Purchase to add their stock."
+      load={liveLoaders.medicines}
+      actions={<AddMedicineDialog />}
+      showSerialNumber
+      compactTable
+      columnLabels={{
+        brand_name: "Medicine",
+        generic_name: "Generic",
+        strength: "Strength",
+        dosage_form: "Form",
+        manufacturer: "Manufacturer",
+        base_unit: "Unit",
+        sale_price_paisa: "Sale price",
+      }}
+      deleteConfig={{ table: "products", recordLabel: "medicine", archiveIfLinked: true }}
+      rowActions={(row) => (
+        <EditMedicineDialog
+          medicine={{
+            id: String(row["id"]),
+            brand_name: String(row["brand_name"] ?? ""),
+            generic_name: row["generic_name"],
+            strength: row["strength"],
+            dosage_form: row["dosage_form"],
+            manufacturer: row["manufacturer"],
+            sale_price_paisa: row["sale_price_paisa"],
+            min_stock: row["min_stock"],
+            barcode: row["barcode"],
+            prescription_required: row["prescription_required"],
+            notes: row["notes"],
+            is_active: row["is_active"],
+          }}
+        />
+      )}
+    />
+  ),
 });
-
-function Page() {
-  return (
-    <div>
-      <PageHeader title="Medicine Catalog" description="This section is being built next." />
-      <EmptyState title="Coming up next" description="Medicine Catalog will be available in the next build step." />
-    </div>
-  );
-}

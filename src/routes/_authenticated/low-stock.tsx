@@ -1,23 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, EmptyState } from "@/components/ui-kit";
-
+import { LiveDataPage, liveLoaders } from "@/components/LiveDataPage";
 export const Route = createFileRoute("/_authenticated/low-stock")({
-  head: () => ({
-    meta: [
-      { title: "Low Stock — Al Shifa Family Clinic Pharmacy" },
-      { name: "description", content: "Low Stock for Al Shifa Family Clinic pharmacy management." },
-      { property: "og:title", content: "Low Stock — Al Shifa Family Clinic Pharmacy" },
-      { property: "og:description", content: "Low Stock for Al Shifa Family Clinic pharmacy management." },
-    ],
-  }),
-  component: Page,
+  component: () => (
+    <LiveDataPage
+      title="Low Stock"
+      description="Medicines at or below their configured minimum stock level."
+      load={liveLoaders.lowStock}
+    />
+  ),
 });
-
-function Page() {
-  return (
-    <div>
-      <PageHeader title="Low Stock" description="This section is being built next." />
-      <EmptyState title="Coming up next" description="Low Stock will be available in the next build step." />
-    </div>
-  );
-}

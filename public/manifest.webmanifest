@@ -1,0 +1,19 @@
+{
+  "name": "Al Shifa Family Clinic Pharmacy",
+  "short_name": "Al Shifa Clinic",
+  "description": "Pharmacy and clinic management for Al Shifa Family Clinic.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7fbfd",
+  "theme_color": "#164d91",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/al-shifa-logo.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

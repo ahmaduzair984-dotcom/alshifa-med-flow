@@ -9,8 +9,7 @@ export function toPaisa(input: string | number): number {
   if (!cleaned) return 0;
   const negative = cleaned.startsWith("-");
   const [whole, frac = ""] = cleaned.replace("-", "").split(".");
-  const paisa =
-    Number(whole || "0") * 100 + Number((frac + "00").slice(0, 2) || "0");
+  const paisa = Number(whole || "0") * 100 + Number((frac + "00").slice(0, 2) || "0");
   return negative ? -paisa : paisa;
 }
 

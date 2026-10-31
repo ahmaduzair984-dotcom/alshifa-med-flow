@@ -17,6 +17,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
 import { Route as AuthenticatedExpiringRouteImport } from './routes/_authenticated/expiring'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
+import { Route as AuthenticatedLabTestsRouteImport } from './routes/_authenticated/lab-tests'
 import { Route as AuthenticatedLowStockRouteImport } from './routes/_authenticated/low-stock'
 import { Route as AuthenticatedMedicinesRouteImport } from './routes/_authenticated/medicines'
 import { Route as AuthenticatedPatientsRouteImport } from './routes/_authenticated/patients'
@@ -24,9 +25,12 @@ import { Route as AuthenticatedPosRouteImport } from './routes/_authenticated/po
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedReturnsRouteImport } from './routes/_authenticated/returns'
 import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
+import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedLabsIndexRouteImport } from './routes/_authenticated/labs/index'
+import { Route as AuthenticatedLabsNewRouteImport } from './routes/_authenticated/labs/new'
 import { Route as AuthenticatedPurchasesIndexRouteImport } from './routes/_authenticated/purchases/index'
 import { Route as AuthenticatedPurchasesNewRouteImport } from './routes/_authenticated/purchases/new'
 
@@ -69,6 +73,11 @@ const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
   path: '/inventory',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLabTestsRoute = AuthenticatedLabTestsRouteImport.update({
+  id: '/lab-tests',
+  path: '/lab-tests',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLowStockRoute = AuthenticatedLowStockRouteImport.update({
   id: '/low-stock',
   path: '/low-stock',
@@ -104,6 +113,11 @@ const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
   path: '/sales',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedServicesRoute = AuthenticatedServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -117,6 +131,16 @@ const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLabsIndexRoute = AuthenticatedLabsIndexRouteImport.update({
+  id: '/labs/',
+  path: '/labs/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLabsNewRoute = AuthenticatedLabsNewRouteImport.update({
+  id: '/labs/new',
+  path: '/labs/new',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPurchasesIndexRoute =
@@ -140,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/expenses': typeof AuthenticatedExpensesRoute
   '/expiring': typeof AuthenticatedExpiringRoute
   '/inventory': typeof AuthenticatedInventoryRoute
+  '/lab-tests': typeof AuthenticatedLabTestsRoute
   '/low-stock': typeof AuthenticatedLowStockRoute
   '/medicines': typeof AuthenticatedMedicinesRoute
   '/patients': typeof AuthenticatedPatientsRoute
@@ -147,10 +172,13 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/returns': typeof AuthenticatedReturnsRoute
   '/sales': typeof AuthenticatedSalesRoute
+  '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/labs/new': typeof AuthenticatedLabsNewRoute
   '/purchases/new': typeof AuthenticatedPurchasesNewRoute
+  '/labs/': typeof AuthenticatedLabsIndexRoute
   '/purchases/': typeof AuthenticatedPurchasesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -161,6 +189,7 @@ export interface FileRoutesByTo {
   '/expenses': typeof AuthenticatedExpensesRoute
   '/expiring': typeof AuthenticatedExpiringRoute
   '/inventory': typeof AuthenticatedInventoryRoute
+  '/lab-tests': typeof AuthenticatedLabTestsRoute
   '/low-stock': typeof AuthenticatedLowStockRoute
   '/medicines': typeof AuthenticatedMedicinesRoute
   '/patients': typeof AuthenticatedPatientsRoute
@@ -168,10 +197,13 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/returns': typeof AuthenticatedReturnsRoute
   '/sales': typeof AuthenticatedSalesRoute
+  '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/labs/new': typeof AuthenticatedLabsNewRoute
   '/purchases/new': typeof AuthenticatedPurchasesNewRoute
+  '/labs': typeof AuthenticatedLabsIndexRoute
   '/purchases': typeof AuthenticatedPurchasesIndexRoute
 }
 export interface FileRoutesById {
@@ -184,6 +216,7 @@ export interface FileRoutesById {
   '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
   '/_authenticated/expiring': typeof AuthenticatedExpiringRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
+  '/_authenticated/lab-tests': typeof AuthenticatedLabTestsRoute
   '/_authenticated/low-stock': typeof AuthenticatedLowStockRoute
   '/_authenticated/medicines': typeof AuthenticatedMedicinesRoute
   '/_authenticated/patients': typeof AuthenticatedPatientsRoute
@@ -191,10 +224,13 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/returns': typeof AuthenticatedReturnsRoute
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
+  '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/_authenticated/labs/new': typeof AuthenticatedLabsNewRoute
   '/_authenticated/purchases/new': typeof AuthenticatedPurchasesNewRoute
+  '/_authenticated/labs/': typeof AuthenticatedLabsIndexRoute
   '/_authenticated/purchases/': typeof AuthenticatedPurchasesIndexRoute
 }
 export interface FileRouteTypes {
@@ -207,6 +243,7 @@ export interface FileRouteTypes {
     | '/expenses'
     | '/expiring'
     | '/inventory'
+    | '/lab-tests'
     | '/low-stock'
     | '/medicines'
     | '/patients'
@@ -214,10 +251,13 @@ export interface FileRouteTypes {
     | '/reports'
     | '/returns'
     | '/sales'
+    | '/services'
     | '/settings'
     | '/suppliers'
     | '/users'
+    | '/labs/new'
     | '/purchases/new'
+    | '/labs/'
     | '/purchases/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -228,6 +268,7 @@ export interface FileRouteTypes {
     | '/expenses'
     | '/expiring'
     | '/inventory'
+    | '/lab-tests'
     | '/low-stock'
     | '/medicines'
     | '/patients'
@@ -235,10 +276,13 @@ export interface FileRouteTypes {
     | '/reports'
     | '/returns'
     | '/sales'
+    | '/services'
     | '/settings'
     | '/suppliers'
     | '/users'
+    | '/labs/new'
     | '/purchases/new'
+    | '/labs'
     | '/purchases'
   id:
     | '__root__'
@@ -250,6 +294,7 @@ export interface FileRouteTypes {
     | '/_authenticated/expenses'
     | '/_authenticated/expiring'
     | '/_authenticated/inventory'
+    | '/_authenticated/lab-tests'
     | '/_authenticated/low-stock'
     | '/_authenticated/medicines'
     | '/_authenticated/patients'
@@ -257,10 +302,13 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/returns'
     | '/_authenticated/sales'
+    | '/_authenticated/services'
     | '/_authenticated/settings'
     | '/_authenticated/suppliers'
     | '/_authenticated/users'
+    | '/_authenticated/labs/new'
     | '/_authenticated/purchases/new'
+    | '/_authenticated/labs/'
     | '/_authenticated/purchases/'
   fileRoutesById: FileRoutesById
 }
@@ -328,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInventoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/lab-tests': {
+      id: '/_authenticated/lab-tests'
+      path: '/lab-tests'
+      fullPath: '/lab-tests'
+      preLoaderRoute: typeof AuthenticatedLabTestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/low-stock': {
       id: '/_authenticated/low-stock'
       path: '/low-stock'
@@ -377,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSalesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/services': {
+      id: '/_authenticated/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof AuthenticatedServicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -396,6 +458,20 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/labs/': {
+      id: '/_authenticated/labs/'
+      path: '/labs'
+      fullPath: '/labs/'
+      preLoaderRoute: typeof AuthenticatedLabsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/labs/new': {
+      id: '/_authenticated/labs/new'
+      path: '/labs/new'
+      fullPath: '/labs/new'
+      preLoaderRoute: typeof AuthenticatedLabsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/purchases/': {
@@ -421,6 +497,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
   AuthenticatedExpiringRoute: typeof AuthenticatedExpiringRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
+  AuthenticatedLabTestsRoute: typeof AuthenticatedLabTestsRoute
   AuthenticatedLowStockRoute: typeof AuthenticatedLowStockRoute
   AuthenticatedMedicinesRoute: typeof AuthenticatedMedicinesRoute
   AuthenticatedPatientsRoute: typeof AuthenticatedPatientsRoute
@@ -428,10 +505,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedReturnsRoute: typeof AuthenticatedReturnsRoute
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
+  AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedLabsNewRoute: typeof AuthenticatedLabsNewRoute
   AuthenticatedPurchasesNewRoute: typeof AuthenticatedPurchasesNewRoute
+  AuthenticatedLabsIndexRoute: typeof AuthenticatedLabsIndexRoute
   AuthenticatedPurchasesIndexRoute: typeof AuthenticatedPurchasesIndexRoute
 }
 
@@ -441,6 +521,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
   AuthenticatedExpiringRoute: AuthenticatedExpiringRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
+  AuthenticatedLabTestsRoute: AuthenticatedLabTestsRoute,
   AuthenticatedLowStockRoute: AuthenticatedLowStockRoute,
   AuthenticatedMedicinesRoute: AuthenticatedMedicinesRoute,
   AuthenticatedPatientsRoute: AuthenticatedPatientsRoute,
@@ -448,10 +529,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedReturnsRoute: AuthenticatedReturnsRoute,
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
+  AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedLabsNewRoute: AuthenticatedLabsNewRoute,
   AuthenticatedPurchasesNewRoute: AuthenticatedPurchasesNewRoute,
+  AuthenticatedLabsIndexRoute: AuthenticatedLabsIndexRoute,
   AuthenticatedPurchasesIndexRoute: AuthenticatedPurchasesIndexRoute,
 }
 
@@ -466,3 +550,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

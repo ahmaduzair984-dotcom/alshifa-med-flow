@@ -16,12 +16,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { InstallAppButton } from "@/components/PwaControls";
+import { isNetworkFailure } from "@/lib/offline-queue";
+import { OfflineSyncStatus } from "@/components/OfflineSyncStatus";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async () => {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) throw redirect({ to: "/auth" });
+    if (!navigator.onLine) return { user: sessionData.session.user };
+
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
+    if (error) {
+      if (isNetworkFailure(error)) return { user: sessionData.session.user };
+      throw redirect({ to: "/auth" });
+    }
+    if (!data.user) throw redirect({ to: "/auth" });
+    const profile = await supabase
+      .from("profiles")
+      .select("is_active")
+      .eq("id", data.user.id)
+      .maybeSingle();
+    if (profile.data?.is_active === false) {
+      await supabase.auth.signOut({ scope: "local" });
+      throw redirect({ to: "/auth" });
+    }
     return { user: data.user };
   },
   component: AuthenticatedLayout,
@@ -35,9 +55,13 @@ function AuthenticatedLayout() {
           <AppSidebar />
           <div className="flex min-w-0 flex-1 flex-col">
             <Header />
-            <main className="flex-1 p-4 md:p-6">
+            <OfflineSyncStatus />
+            <main className="flex-1 p-3 sm:p-4 md:p-6">
               <Outlet />
             </main>
+            <footer className="px-3 pb-3 text-center text-xs text-muted-foreground sm:px-4 md:px-6">
+              Pharmacy management software developed by Ahmad Uzair Tarar
+            </footer>
           </div>
         </div>
       </SidebarProvider>
@@ -46,7 +70,7 @@ function AuthenticatedLayout() {
 }
 
 function Header() {
-  const { user, roles, fullName } = useAuth();
+  const { roles, fullName } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -61,8 +85,9 @@ function Header() {
     <header className="no-print sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-card/80 px-3 backdrop-blur md:px-6">
       <SidebarTrigger />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold">Pharmacy Management System</p>
+        <p className="truncate text-sm font-semibold">Al Shifa Pharmacy</p>
       </div>
+      <InstallAppButton />
       <div className="hidden gap-1 sm:flex">
         {roles.map((role) => (
           <Badge key={role} variant="secondary" className="capitalize">
@@ -77,9 +102,7 @@ function Header() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel className="truncate">
-            {fullName || user?.email}
-          </DropdownMenuLabel>
+          <DropdownMenuLabel className="truncate">{fullName || "Staff account"}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={signOut}>
             <LogOut className="mr-2 size-4" /> Sign out

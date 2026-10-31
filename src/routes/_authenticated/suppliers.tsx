@@ -1,23 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, EmptyState } from "@/components/ui-kit";
+import { LiveDataPage, liveLoaders } from "@/components/LiveDataPage";
+import { AddSupplierDialog } from "@/components/DataEntryDialogs";
 
 export const Route = createFileRoute("/_authenticated/suppliers")({
-  head: () => ({
-    meta: [
-      { title: "Suppliers — Al Shifa Family Clinic Pharmacy" },
-      { name: "description", content: "Suppliers for Al Shifa Family Clinic pharmacy management." },
-      { property: "og:title", content: "Suppliers — Al Shifa Family Clinic Pharmacy" },
-      { property: "og:description", content: "Suppliers for Al Shifa Family Clinic pharmacy management." },
-    ],
-  }),
-  component: Page,
+  component: () => (
+    <LiveDataPage
+      title="Suppliers"
+      description="Manage supplier contacts before recording purchases."
+      load={liveLoaders.suppliers}
+      actions={<AddSupplierDialog />}
+      deleteConfig={{ table: "suppliers", recordLabel: "supplier" }}
+    />
+  ),
 });
-
-function Page() {
-  return (
-    <div>
-      <PageHeader title="Suppliers" description="This section is being built next." />
-      <EmptyState title="Coming up next" description="Suppliers will be available in the next build step." />
-    </div>
-  );
-}
